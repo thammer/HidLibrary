@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="PowerMateViewer" Language="1033" Version="1.0.0.0" Manufacturer="Thomas Hammer, www.thammer.net" 
+           UpgradeCode="03e4361d-b68a-4798-b5ad-8a7ae7efc882">
+		<Package InstallerVersion="200" Compressed="yes" />
+
+      <Upgrade Id="03e4361d-b68a-4798-b5ad-8a7ae7efc882">
+          <UpgradeVersion Minimum="0.0.0" IncludeMinimum="yes" IncludeMaximum="yes" Maximum="0.0.0" Property="OLDERVERSIONBEINGUPGRADED" />
+      </Upgrade>
+
+      <InstallExecuteSequence>
+          <RemoveExistingProducts After="InstallInitialize"/>
+      </InstallExecuteSequence>
+
+      <Media Id="1" Cabinet="PowerMateViewer.cab" EmbedCab="yes" />
+
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLLOCATION" Name="PowerMateViewer">
+					<Component Id="Application" Guid="45a0e350-f555-4c67-a049-52acf0aea887">
+              <File Source="$(var.GriffinPowerMateWindowsForms.TargetPath)" />
+          </Component>
+          <Component Id="Library" Guid="51256F78-58CD-46CE-AD4B-ACE027BB6C10">
+              <File Source='$(var.GriffinPowerMateWindowsForms.TargetDir)\HidLibrary.dll' />
+              <File Source='$(var.GriffinPowerMateWindowsForms.TargetDir)\PowerMate.dll' />
+          </Component>
+        </Directory>
+			</Directory>
+      <Directory Id="ProgramMenuFolder">
+          <Directory Id="ApplicationProgramsFolder" Name="PowerMate Viewer">
+              <Component Id="ApplicationShortcut" Guid="6E2448A7-115C-4F23-B9B2-0E31481AC3D9">
+                  <Shortcut Id="ApplicationStartMenuShortcut"
+                            Name="PowerMate Viewer"
+                            Description="PowerMate Viewer"
+                            Target="[INSTALLLOCATION]$(var.GriffinPowerMateWindowsForms.TargetFileName)"
+                            WorkingDirectory="INSTALLLOCATION"
+                            Icon="PowerMateViewer.ico"
+                            />
+                  <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+                  <RegistryValue Root="HKCU" Key="Software\Microsoft\PowerMateViewer" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+              </Component>
+          </Directory>
+      </Directory>
+    </Directory>
+
+		<Feature Id="PowerMateViewer" Title="PowerMate Viewer" Level="1">
+			<ComponentRef Id="Application" />
+      <ComponentRef Id="Library" />
+      <ComponentRef Id="ApplicationShortcut" />
+        <!-- Note: The following ComponentGroupRef is required to pull in generated authoring from project references. -->
+			<ComponentGroupRef Id="Product.Generated" />
+		</Feature>
+
+      <Icon Id="PowerMateViewer.ico" SourceFile="PowerMateViewer.ico"/>
+      <Property Id="ARPPRODUCTICON" Value="PowerMateViewer.ico" />
+
+      <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+      <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" />
+    <UI>
+        <UIRef Id="WixUI_InstallDir" />
+    </UI>
+
+  </Product>
+</Wix>
